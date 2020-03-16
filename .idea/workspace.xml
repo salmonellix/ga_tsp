@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="cc271f69-0d8e-4c38-bcbf-b191a7af7bf8" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
@@ -39,7 +38,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.tsp_auto">
+  <component name="RunManager" selected="Python.main">
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="ga_tsp_1" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -84,8 +83,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.tsp_auto" />
         <item itemvalue="Python.main" />
+        <item itemvalue="Python.tsp_auto" />
       </list>
     </recent_temporary>
   </component>
@@ -100,6 +99,14 @@
       <option name="presentableId" value="Default" />
       <updated>1584347646737</updated>
     </task>
+    <task id="LOCAL-00001" summary="to fitness">
+      <created>1584372229388</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1584372229388</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -107,10 +114,16 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="to fitness" />
+    <option name="LAST_COMMIT_MESSAGE" value="to fitness" />
   </component>
 </project>
