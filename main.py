@@ -5,7 +5,7 @@ import numpy as np, random, operator, pandas as pd, matplotlib.pyplot as plt
 x = [0, 3, 6, 7, 15, 12, 14, 9, 7, 0]
 y = [1, 4, 5, 3, 0, 4, 10, 6, 9, 10]
 
-init_pop = np.random.choice(range(10), 10, replace=False)
+#init_pop = np.random.choice(range(10), 10, replace=False)
 init_chr = [0,1, 2, 3, 4, 5, 6, 7, 8, 9]
 P = 250
 n = 0.8
@@ -134,7 +134,7 @@ def showTour(x,y,tour):
 
 
 chrr = Chromosome(x,y, init_chr)
-ourPop = initialPopulation(P, init_chr)
+
 bestRoutes = populationCumSum(x,y,ourPop)
 select_chroms = rouletteSele(bestRoutes,ourPop)
 best_chr = Chromosome(x,y, select_chroms)
@@ -154,3 +154,36 @@ print("-------------")
 
 print(mutation(O1))
 showTour(x,y,mutation(O1))
+
+ #  MAIN LOOP
+n_time = 0                                       # count loop start with 0
+current_population = initialPopulation(P, init_chr)  # step 1 - create initial population (P chromosomes)
+n_parents = n*P    # nbr of parents to create offsprings
+
+while n_time < Tmax:
+    nP_current = []
+    offsprings = []
+    pop_cum_fit = populationCumSum(x, y, current_population) # create data frame with cumulative fitness values
+    for i in range(0, np.floor(n_parents)):           # Choose n*P parents from the current population
+        sele_parent = rouletteSele(pop_cum_fit, current_population)
+        nP_current.append(sele_parent)
+
+    for i in range(0, np.floor(n_parents)):
+        P1 = random.choice(nP_current)                # Select randomly two parents to create offspring using crossover operator
+        P2 = random.choice(nP_current)                # Repeat the Step 4 until n  P ospring are generated
+        O1 = crossover(P1,P2)
+        offsprings.append(O1)
+
+    for i in range(0, np.floor(pm*P)):
+        random_O1 = random.choice(offsprings)               # Apply mutation operators for changes in randomly selected offspring
+        position_O1 = offsprings.index(random_O1)
+        offsprings[position_O1] = mutation(random_O1)
+
+#### 7. Replace old parent population with the best (of minimum cost) P individuals
+###### selected from the combined population of parents and offspring
+
+
+
+
+
+
