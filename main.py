@@ -1,7 +1,8 @@
 
-import numpy as np, random, operator, pandas as pd, matplotlib.pyplot as plt
+import numpy as np, random, operator, pandas as pd, matplotlib.pyplot as plt, time
 
 
+start = time.time()
 x = [0, 3, 6, 7, 15, 12, 14, 9, 7, 0]
 y = [1, 4, 5, 3, 0, 4, 10, 6, 9, 10]
 
@@ -12,6 +13,7 @@ n = 0.8
 pm = 0.2
 Tmax = 1000
 
+ch1 = [3, 6, 1, 9, 4, 8, 0, 5, 2, 7]
 
 class Chromosome():
     def __init__(self,xlist,ylist,order):
@@ -39,7 +41,7 @@ class Chromosome():
                 if j < len(self.order):
                     jo = self.order[j]
                     self.distance = self.distance + np.sqrt(((self.xlist[o]-self.xlist[jo])**2)+((self.ylist[o]-self.ylist[jo])**2))
-        #print(self.distance)
+        # print(self.distance)
 
 
         #print(self.distance)
@@ -51,7 +53,8 @@ class Chromosome():
         return self.fitness
 
 
-
+# chm = Chromosome(x,y,ch1)
+# chm.cost()
 
 
 def createChromosome():
@@ -70,10 +73,12 @@ def populationCumSum(x,y,population):
     for i in range(0,len(population)):
         fitnessResults[i] = Chromosome(x,y,population[i]).routeFitness()
     fitnessResults = sorted(fitnessResults.items(), key = operator.itemgetter(1), reverse = False)
-    df_fitResults = pd.DataFrame(fitnessResults, columns = ["Chr_nbr", "Fitness"])
+    df_fitResults = pd.DataFrame(fitnessResults, columns = ["Chrms", "Fitness"])
     #df_fitResults = df_fitResults.transpose()
     cumDF = df_fitResults.cumsum()
-    cumDF["Chr_nbr"] = df_fitResults["Chr_nbr"]
+    cumDF["Chrms"] = df_fitResults["Chrms"]
+    # for i in range(0, len(df_fitResults["Tour"])):
+    #     cumDF["Tour"][i] = population[df_fitResults["Tour"][i]]
     return cumDF #zwraca całą df
 
 def rouletteSele(df_cum, population):
@@ -85,10 +90,16 @@ def rouletteSele(df_cum, population):
     for i in range(0, len(df_cum["Fitness"])):
         if df_cum["Fitness"][i] > r:
             # print(df_cum["Fitness"][i] )
-            chr_id = df_cum["Chr_nbr"][i]
+            # chr_id = df_cum["Chr_nbr"][i]
+            seleChrmsm = df_cum["Chrms"][i]
             break
     seleChrmsm = population[chr_id]
-    return seleChrmsm.tolist()    # return chromosome choosen by roulette wheal
+    try:
+        seleChrmsm = seleChrmsm.tolist()
+    except:
+        pass
+
+    return seleChrmsm    # return chromosome choosen by roulette wheal
 
 # crossover
 
@@ -109,7 +120,7 @@ def crossover(P1,P2):
     return O1
 
 def mutation(offspring):
-    nbr_list = [i for i in range(0, 10)]
+    nbr_list = [j for j in range(0, 10)]
     nbr_list = random.sample(nbr_list, len(nbr_list))
     point1 = nbr_list[0]
     point2 = nbr_list[1]
@@ -121,11 +132,12 @@ def mutation(offspring):
 def showTour(x,y,tour):
     new_x = []
     new_y = []
-    for i in tour:
-        new_x.append(x[i])
-        new_y.append(y[i])
-    print(" new x : %s", new_x)
-    print(" new y : %s", new_y)
+    print(tour)
+    for k in tour:
+        new_x.append(x[k])
+        new_y.append(y[k])
+    print(" new x : ", new_x)
+    print(" new y : ", new_y)
     print(tour)
     plt.plot(new_x,new_y, '-o')
     for x, y, z in zip(new_x,new_y, tour):
@@ -133,56 +145,73 @@ def showTour(x,y,tour):
     plt.show()
 
 
-chrr = Chromosome(x,y, init_chr)
-
-bestRoutes = populationCumSum(x,y,ourPop)
-select_chroms = rouletteSele(bestRoutes,ourPop)
-best_chr = Chromosome(x,y, select_chroms)
-
-P1 = rouletteSele(bestRoutes,ourPop)
-P2 = rouletteSele(bestRoutes, ourPop)
-# print(P1)
-# # print(P2)
-# # print("|||||||||||||")
-O1 = crossover(P1,P2)
-print(O1)
-# # O2 = crossover(P2,P1)
-# #
-# # print(O1)
-print("-------------")
-# # print(O2)
-
-print(mutation(O1))
-showTour(x,y,mutation(O1))
-
  #  MAIN LOOP
 n_time = 0                                       # count loop start with 0
 current_population = initialPopulation(P, init_chr)  # step 1 - create initial population (P chromosomes)
+print(current_population)
 n_parents = n*P    # nbr of parents to create offsprings
-
+n_parents  = np.int(np.floor(n_parents))
+df_all = pd.DataFrame({"Fitness": [], "Chrms": []})
 while n_time < Tmax:
+    print(n_time)
     nP_current = []
     offsprings = []
     pop_cum_fit = populationCumSum(x, y, current_population) # create data frame with cumulative fitness values
-    for i in range(0, np.floor(n_parents)):           # Choose n*P parents from the current population
+    for i in range(0, n_parents):           # Choose n*P parents from the current population
         sele_parent = rouletteSele(pop_cum_fit, current_population)
         nP_current.append(sele_parent)
 
-    for i in range(0, np.floor(n_parents)):
-        P1 = random.choice(nP_current)                # Select randomly two parents to create offspring using crossover operator
-        P2 = random.choice(nP_current)                # Repeat the Step 4 until n  P ospring are generated
-        O1 = crossover(P1,P2)
+    for i in range(0, n_parents):
+        P1 = current_population[random.randrange(n_parents)] # Select randomly two parents to create offspring using crossover operator
+        P2 = current_population[random.randrange(n_parents)]             # Repeat the Step 4 until n  P ospring are generated
+        try:
+            O1 = crossover(P1.tolist(),P2.tolist())
+        except:
+            O1 = crossover(P1, P2)
         offsprings.append(O1)
 
-    for i in range(0, np.floor(pm*P)):
+    for i in range(0,n_parents):
         random_O1 = random.choice(offsprings)               # Apply mutation operators for changes in randomly selected offspring
         position_O1 = offsprings.index(random_O1)
-        offsprings[position_O1] = mutation(random_O1)
+        offsprings[position_O1] = mutation(random_O1)    # podmienia wszystkie offspring --> lista z sekwencjami
+
+    # create dataframe from the combined population of parents and offspring:
+    fit = []
+    for i in range(0, len(offsprings)):
+        df_all["Chrms"][i] = offsprings[i]
+        fit.append(Chromosome(x,y,offsprings[i]).routeFitness())
+#    df_all = pd.concat([pop_cum_fit, df_all], sort = True)
+    lista_nowa=[]
+    lista_nowa2 = pop_cum_fit["Fitness"].tolist()
+    for i in range(0, len(current_population)):
+        nbr  = [int(pop_cum_fit["Chrms"][i])][0]
+        ele= current_population[nbr]
+        try:
+            lista_nowa.append(ele.tolist())
+        except:
+            lista_nowa.append(ele)
+        #current_population [i] = df_all["Chrms"][i]
+    lista_nowa.extend(offsprings)
+    lista_nowa2.extend(list(fit))
+    df_all = pd.DataFrame({ "Chrms": lista_nowa, "Fitness": lista_nowa2})
+    df_all=df_all.sort_values(by=['Fitness'],ascending=False)
+    for i in range(0, len(current_population)):
+        current_population[i] = df_all["Chrms"][i]
+    n_time+=1
+end = time.time()
+print(end - start)
+best_route = current_population[-1]
+
+print(current_population)
+chm = Chromosome(x,y,best_route)
+print(chm.cost())
+showTour(x,y,best_route)
 
 #### 7. Replace old parent population with the best (of minimum cost) P individuals
 ###### selected from the combined population of parents and offspring
 
-
+## to do:
+## poprawić df all
 
 
 
