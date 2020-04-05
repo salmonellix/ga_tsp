@@ -5,27 +5,27 @@ import numpy as np, random, operator, pandas as pd, matplotlib.pyplot as plt, ti
 start = time.time()
 
 #  Get x, y cords from file
-# map_file = open(str(sys.argv[1]), "r")
-# lines = map_file.readlines()
-# x_start = lines[1].index("[")
-# x_end = lines[1].index("]")
-# x = list(map(int, lines[1][x_start+1:x_end].split(" ")))
-# y_start = lines[2].index("[")
-# y_end = lines[2].index("]")
-# y = list(map(int, lines[2][y_start+1:y_end].split(" ")))
-# # get other params
-# P = int(sys.argv[2])
-# n = float(sys.argv[3])
-# pm = float(sys.argv[4])
-# Tmax = int(sys.argv[5])
+map_file = open(str(sys.argv[1]), "r")
+lines = map_file.readlines()
+x_start = lines[1].index("[")
+x_end = lines[1].index("]")
+x = list(map(int, lines[1][x_start+1:x_end].split(" ")))
+y_start = lines[2].index("[")
+y_end = lines[2].index("]")
+y = list(map(int, lines[2][y_start+1:y_end].split(" ")))
+# get other params
+P = int(sys.argv[2])
+n = float(sys.argv[3])
+pm = float(sys.argv[4])
+Tmax = int(sys.argv[5])
 
 init_chr = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-P = 100
-n = 0.9
-pm = 0.1
-Tmax = 10
-x = [0, 3, 6, 7, 15, 12, 14, 9, 7, 0]
-y = [1, 4, 5, 3, 0, 4, 10, 6, 9, 10]
+# P = 500
+# n = 0.9
+# pm = 0.3
+# Tmax = 10
+# x = [0, 3, 6, 7, 15, 12, 14, 9, 7, 0]
+# y = [1, 4, 5, 3, 0, 4, 10, 6, 9, 10]
 
 
 print("       Traveling Salesman Problem         ")
